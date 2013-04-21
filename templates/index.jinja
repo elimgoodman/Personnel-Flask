@@ -1,0 +1,7 @@
+<h1>Hello world</h1>
+
+{% if user.is_anonymous() %}
+    <a href="{{ url_for('login') }}">log in</a>
+{% else %}
+    <a href="{{ url_for('logout') }}">log out</a>
+{% endif %}
