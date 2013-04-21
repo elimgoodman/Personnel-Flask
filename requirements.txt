@@ -7,4 +7,5 @@ distribute==0.6.34
 flask-heroku==0.1.4
 gunicorn==0.17.2
 psycopg2==2.5
+py-bcrypt==0.3
 wsgiref==0.1.2
