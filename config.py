@@ -11,3 +11,6 @@ def get_config(key):
         return environ.get(key)
     else:
         return local[key]
+
+from app import app
+app.run(debug=True)

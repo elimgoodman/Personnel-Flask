@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    {% block head %}
+    <link rel="stylesheet" href="/static/css/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/bootstrap-responsive.css" />
+    <link href="http://www.thoughtmachine.co/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/index.css" />
+    <title>Personnel</title>
+    {% endblock %}
+</head>
+<body>
+    <div class="container">
+        <div class="navbar navbar-fixed-top">
+          <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="#">Personnel</a>
+                <ul id="nav-links" class="nav">
+                    {% if user.is_anonymous() %}
+                        <li><a href="{{ url_for("users.login") }}">Log In</a></li>
+                    {% else %}
+                        <li><a href="#">People</a></li>
+                        <li><a href="#">Settings</a></li>
+                        <li><a href="{{ url_for("users.logout") }}">Log Out</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+          </div>
+        </div>
+        <div id="content">{% block content %}{% endblock %}</div>
+        <div id="footer">
+            {% block footer %}
+            &copy; Copyright 2008 by <a href="http://domain.invalid/">you</a>.
+            {% endblock %}
+        </div>
+    </div>
+</body>
