@@ -1,0 +1,19 @@
+ body {
+     padding: 60px;
+ }
+
+ #nav-links {
+    float: right;
+ }
+
+.navbar .brand {
+    color: #8C1799;
+}
+
+.navbar .brand:hover {
+    color: #BF1BD1;
+}
+
+.navbar {
+    position: fixed;
+}

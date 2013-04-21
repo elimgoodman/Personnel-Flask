@@ -67,6 +67,14 @@ class LoginForm(Form):
     email = TextField('Email Address', [validators.Required()])
     password = PasswordField('Password', [validators.Required()])
 
+def common_render(tmpl_name, **kwargs):
+    common_args = {
+        "user": current_user
+    }
+
+    kwargs.update(common_args)
+    return render_template(tmpl_name, **kwargs)
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     form = RegistrationForm(request.form)
@@ -84,7 +92,7 @@ def register():
 
         login_user(user)
         return redirect(url_for('index'))
-    return render_template('register.jinja', form=form)
+    return common_render('register.jinja', form=form)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -99,7 +107,7 @@ def login():
 
         login_user(user)
         return redirect(url_for('index'))
-    return render_template('login.jinja', form=form)
+    return common_render('login.jinja', form=form)
 
 @app.route("/logout")
 @login_required
@@ -109,7 +117,10 @@ def logout():
 
 @app.route('/')
 def index():
-    return render_template('index.jinja', user=current_user)
+    if current_user.is_anonymous():
+        return common_render('splash.jinja')
+    else:
+        return common_render('dashboard.jinja')
 
 if __name__ == "__main__":
     app.run(debug=True)
