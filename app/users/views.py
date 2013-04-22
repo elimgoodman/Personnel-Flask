@@ -1,7 +1,8 @@
 import bcrypt
 from sqlalchemy import and_
+from sqlalchemy.orm.exc import NoResultFound
 from app.users.models import User
-from app import app, login_manager, common_render
+from app import app, login_manager, common_render, db
 from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for
 from flask_login import login_user, login_required, current_user, logout_user
 from flask.ext.wtf import Form
@@ -55,8 +56,12 @@ def login():
         password_hash = bcrypt.hashpw(form.password.data, salt)
 
         clause = and_(User.email == form.email.data, User.password_hash == password_hash)
-        print form.email.data
-        user = User.query.filter(clause).one()
+
+        try:
+            user = User.query.filter(clause).one()
+        except NoResultFound:
+            flash("Incorrect email address or password.")
+            return common_render('login.jinja', form=form)
 
         login_user(user)
         return redirect(url_for('index'))
@@ -66,4 +71,4 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("users.index"))
+    return redirect(url_for("index"))

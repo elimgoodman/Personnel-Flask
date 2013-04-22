@@ -5,7 +5,8 @@
     {% block head %}
     <link rel="stylesheet" href="/static/css/bootstrap.css" />
     <link rel="stylesheet" href="/static/css/bootstrap-responsive.css" />
-    <link href="http://www.thoughtmachine.co/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+    <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+    <link href="/static/css/tm.css" rel="stylesheet" type="text/css" media="all">
     <link rel="stylesheet" href="/static/css/index.css" />
     <title>Personnel</title>
     {% endblock %}
@@ -28,6 +29,15 @@
             </div>
           </div>
         </div>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
         <div id="content">{% block content %}{% endblock %}</div>
         <div id="footer">
             {% block footer %}
