@@ -1,19 +1,32 @@
 import os
+from os import environ
 _basedir = os.path.abspath(os.path.dirname(__file__))
 
-DEBUG = True
+_local = {
+    "PW_SALT": "$2a$12$0EqjsotuAMWiN63dRLsnMe",
+    "DATABASE_URL": "sqlite:///test.db",
+    "TOKEN_SECRET": "8qEJw9Nq63T3VZjvdugntU",
+    "ENVIRONMENT": "development"
+}
 
-SECRET_KEY = 'SecretKeyForSessionSigning'
+def get_config(key):
+    if environ.has_key(key):
+        return environ.get(key)
+    else:
+        return _local[key]
 
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, 'test.db')
+IS_PRODUCTION = get_config("ENVIRONMENT") == "production"
+
+DEBUG = not IS_PRODUCTION
+
+PW_SALT = get_config("PW_SALT")
+
+SECRET_KEY = get_config("TOKEN_SECRET")
+
+SQLALCHEMY_DATABASE_URI = get_config("DATABASE_URL")
 DATABASE_CONNECT_OPTIONS = {}
-
-THREADS_PER_PAGE = 8
 
 CSRF_ENABLED=True
 CSRF_SESSION_KEY="somethingimpossibletoguess"
 
-RECAPTCHA_USE_SSL = False
-RECAPTCHA_PUBLIC_KEY = 'blahblahblahblahblahblahblahblahblah'
-RECAPTCHA_PRIVATE_KEY = 'blahblahblahblahblahblahprivate'
-RECAPTCHA_OPTIONS = {'theme': 'white'}
+

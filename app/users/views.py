@@ -1,12 +1,11 @@
-from app import app
+import bcrypt
+from sqlalchemy import and_
+from app.users.models import User
+from app import app, login_manager, common_render
 from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for
-from flask_login import LoginManager, login_user, login_required, current_user, logout_user
+from flask_login import login_user, login_required, current_user, logout_user
 from flask.ext.wtf import Form
 from wtforms import Form, BooleanField, TextField, PasswordField, validators
-
-login_manager = LoginManager()
-login_manager.setup_app(app)
-login_manager.login_view = "users.login"
 
 mod = Blueprint('users', __name__)
 
@@ -29,19 +28,11 @@ class LoginForm(Form):
     email = TextField('Email Address', [validators.Required()])
     password = PasswordField('Password', [validators.Required()])
 
-def common_render(tmpl_name, **kwargs):
-    common_args = {
-        "user": current_user
-    }
-
-    kwargs.update(common_args)
-    return render_template(tmpl_name, **kwargs)
-
 @mod.route("/register", methods=["GET", "POST"])
 def register():
     form = RegistrationForm(request.form)
     if request.method == 'POST' and form.validate():
-        salt = get_config("PW_SALT")
+        salt = app.config.get("PW_SALT")
     
         user = User(
             form.first_name.data, 
@@ -60,7 +51,7 @@ def register():
 def login():
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
-        salt = get_config("PW_SALT")
+        salt = app.config.get("PW_SALT")
         password_hash = bcrypt.hashpw(form.password.data, salt)
 
         clause = and_(User.email == form.email.data, User.password_hash == password_hash)

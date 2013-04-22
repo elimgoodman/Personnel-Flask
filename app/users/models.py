@@ -1,3 +1,4 @@
+from app import app
 from flask.ext.sqlalchemy import SQLAlchemy
 from index import db
 
@@ -9,7 +10,7 @@ class User(db.Model):
     email = db.Column(db.String(128), unique=True)
 
     def __init__(self, first_name, last_name, password, email):
-        salt = get_config("PW_SALT")
+        salt = app.config.get("PW_SALT")
 
         self.first_name = first_name
         self.last_name = last_name
