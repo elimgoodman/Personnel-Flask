@@ -15,7 +15,7 @@
         <div class="navbar navbar-fixed-top">
           <div class="navbar-inner">
             <div class="container">
-                <a class="brand" href="#">Personnel</a>
+                <a class="brand" href="{{ url_for("index") }}">Personnel</a>
                 <ul id="nav-links" class="nav">
                     {% if user.is_anonymous() %}
                         <li><a href="{{ url_for("users.login") }}">Log In</a></li>

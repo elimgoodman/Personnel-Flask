@@ -14,12 +14,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = get_config('DATABASE_URL')
 app.secret_key = get_config("TOKEN_SECRET")
 db = SQLAlchemy(app)
 
-@app.route('/')
-def index():
-    if current_user.is_anonymous:
-        return common_render('splash.jinja')
-    else:
-        return common_render('dashboard.jinja')
 
 if __name__ == "__main__":
     app.run(debug=True)

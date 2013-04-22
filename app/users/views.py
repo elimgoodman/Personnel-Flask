@@ -6,7 +6,7 @@ from wtforms import Form, BooleanField, TextField, PasswordField, validators
 
 login_manager = LoginManager()
 login_manager.setup_app(app)
-login_manager.login_view = "login"
+login_manager.login_view = "users.login"
 
 mod = Blueprint('users', __name__)
 
@@ -75,4 +75,4 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("index"))
+    return redirect(url_for("users.index"))

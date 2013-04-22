@@ -1,0 +1,4 @@
+- clean up config file to use the correct config puller
+- delete index.py
+- make sure all vestigial config stuff is in config.py 
+- update procfile
