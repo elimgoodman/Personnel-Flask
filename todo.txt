@@ -2,3 +2,4 @@
 - delete index.py
 - make sure all vestigial config stuff is in config.py 
 - update procfile
+- move thoughtmachine css to be local
