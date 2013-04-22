@@ -1,8 +1,10 @@
 {% extends "base.jinja" %}
 {% block content %}
     <h1>All People</h1>
-    <p class="important">
-        ALL USERS
-    </p>
+    {% for person in people %}
+        {{person.first_name}}
+    {% else %}
+        No people found.
+    {% endfor %}
 {% endblock %}
 

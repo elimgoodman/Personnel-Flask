@@ -13,3 +13,7 @@ db.session.commit()
 p = Person(u.id, "Eli", "Goodman")
 db.session.add(p)
 db.session.commit()
+
+p = Person(None, "Sally", "Foobar", p.id)
+db.session.add(p)
+db.session.commit()
