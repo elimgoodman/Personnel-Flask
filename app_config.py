@@ -2,20 +2,33 @@ import os
 from os import environ
 _basedir = os.path.abspath(os.path.dirname(__file__))
 
-_local = {
+_dev = {
     "PW_SALT": "$2a$12$0EqjsotuAMWiN63dRLsnMe",
     "DATABASE_URL": "sqlite:///test.db",
     "TOKEN_SECRET": "8qEJw9Nq63T3VZjvdugntU",
-    "ENVIRONMENT": "development"
+    "registration_enabled": True
 }
 
+_prod = {
+    "registration_enabled": False
+}
+
+
+def is_production():
+    return environ.get("ENVIRONMENT") == "production"
+
 def get_config(key):
+    
     if environ.has_key(key):
         return environ.get(key)
+    elif is_production() and _prod.has_key(key):
+        return _prod[key]
+    elif _dev.has_key(key):
+        return _dev[key]
     else:
-        return _local[key]
+        raise Exception("Invalid config key: %s" % (key))
 
-IS_PRODUCTION = get_config("ENVIRONMENT") == "production"
+IS_PRODUCTION = is_production()
 
 DEBUG = not IS_PRODUCTION
 
@@ -29,4 +42,4 @@ DATABASE_CONNECT_OPTIONS = {}
 CSRF_ENABLED=True
 CSRF_SESSION_KEY="somethingimpossibletoguess"
 
-
+REGISTRATION_ENABLED = get_config("registration_enabled")

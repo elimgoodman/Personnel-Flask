@@ -13,7 +13,8 @@ login_manager.login_view = "users.login"
 #FIXME: prob not the best place for this
 def common_render(tmpl_name, **kwargs):
     common_args = {
-        "user": current_user
+        "user": current_user,
+        "config": app.config
     }
 
     kwargs.update(common_args)
@@ -21,7 +22,7 @@ def common_render(tmpl_name, **kwargs):
 
 @app.errorhandler(404)
 def not_found(error):
-    return render_template('404.jinja'), 404
+    return common_render('404.jinja'), 404
 
 @app.route('/')
 def index():
@@ -33,3 +34,5 @@ def index():
 from app.users.views import mod as usersModule
 app.register_blueprint(usersModule)
 
+from app.people.views import mod as peopleModule
+app.register_blueprint(peopleModule)

@@ -8,12 +8,15 @@ from flask_login import login_user, login_required, current_user, logout_user
 from flask.ext.wtf import Form
 from wtforms import Form, BooleanField, TextField, PasswordField, validators
 
-mod = Blueprint('users', __name__)
+mod = Blueprint('users', __name__, template_folder="templates")
 
 @login_manager.user_loader
 def load_user(userid):
     id = int(userid)
-    return User.query.filter(User.id == id).one()
+    try:
+        return User.query.filter(User.id == id).one()
+    except NoResultFound:
+        return None
 
 class RegistrationForm(Form):
     first_name = TextField('First Name')
@@ -36,12 +39,20 @@ def register():
         salt = app.config.get("PW_SALT")
     
         user = User(
-            form.first_name.data, 
-            form.last_name.data, 
-            form.password.data,
-            form.email.data
+            form.email.data,
+            form.password.data
         )
+
         db.session.add(user)
+        db.session.commit()
+        
+        person = Person(
+            user.id,
+            form.first_name.data, 
+            form.last_name.data
+        )
+
+        db.session.add(person)
         db.session.commit()
 
         login_user(user)

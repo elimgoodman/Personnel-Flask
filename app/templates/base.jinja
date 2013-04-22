@@ -19,9 +19,12 @@
                 <a class="brand" href="{{ url_for("index") }}">Personnel</a>
                 <ul id="nav-links" class="nav">
                     {% if user.is_anonymous() %}
+                        {% if config.get('REGISTRATION_ENABLED') %}
+                            <li><a href="{{ url_for("users.register") }}">Register</a></li>
+                        {% endif %}
                         <li><a href="{{ url_for("users.login") }}">Log In</a></li>
                     {% else %}
-                        <li><a href="#">People</a></li>
+                        <li><a href="{{ url_for("people.all") }}">People</a></li>
                         <li><a href="#">Settings</a></li>
                         <li><a href="{{ url_for("users.logout") }}">Log Out</a></li>
                     {% endif %}
