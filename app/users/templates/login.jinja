@@ -1,7 +1,7 @@
 {% extends "base.jinja" %}
 {% block content %}
     {% from "_form.jinja" import render_field %}
-    <form method=post action="/login">
+    <form method=post action="{{ url_for("user.login") }}">
       <dl>
         {{ render_field(form.email) }}
         {{ render_field(form.password) }}

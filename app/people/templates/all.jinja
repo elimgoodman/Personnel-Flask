@@ -1,10 +1,13 @@
 {% extends "base.jinja" %}
 {% block content %}
     <h1>All People</h1>
-    {% for person in people %}
-        {{person.first_name}}
-    {% else %}
-        No people found.
-    {% endfor %}
+    <ul>
+        {% for person in people %}
+            <li><a href="{{url_for("people.view", id=person.id) }}">{{person.first_name}}</a></li>
+        {% else %}
+            No people found.
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for("people.add") }}">Add a Person</a>
 {% endblock %}
 

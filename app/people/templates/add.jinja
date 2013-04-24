@@ -1,0 +1,14 @@
+{% extends "base.jinja" %}
+{% block content %}
+    <h1>Add a Person</h1>
+    {% from "_form.jinja" import render_field %}
+    <form method=post action="{{ url_for("people.add") }}">
+      <dl>
+        {{ render_field(form.first_name) }}
+        {{ render_field(form.last_name) }}
+      </dl>
+      <p><input type=submit value="Add">
+    </form>
+{% endblock %}
+
+

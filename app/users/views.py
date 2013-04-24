@@ -57,7 +57,7 @@ def register():
         db.session.commit()
 
         login_user(user)
-        return redirect(url_for('index'))
+        return redirect(url_for('index.index'))
     return common_render('register.jinja', form=form)
 
 @mod.route("/login", methods=["GET", "POST"])
@@ -76,11 +76,11 @@ def login():
             return common_render('login.jinja', form=form)
 
         login_user(user)
-        return redirect(url_for('index'))
+        return redirect(url_for('index.index'))
     return common_render('login.jinja', form=form)
 
 @mod.route("/logout")
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("index"))
+    return redirect(url_for("index.index"))

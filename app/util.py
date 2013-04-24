@@ -14,7 +14,7 @@ def common_render(tmpl_name, **kwargs):
 
     common_args = {
         "user": current_user,
-        "config": app.config,
+        #"config": app.config,
         "people": people
     }
 
