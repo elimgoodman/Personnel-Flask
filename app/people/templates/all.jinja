@@ -3,7 +3,7 @@
     <h1>All People</h1>
     <ul>
         {% for person in people %}
-            <li><a href="{{url_for("people.view", id=person.id) }}">{{person.first_name}}</a></li>
+            <li><a href="{{url_for("people.view", person_id=person.id) }}">{{person.first_name}}</a></li>
         {% else %}
             No people found.
         {% endfor %}

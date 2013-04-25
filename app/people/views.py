@@ -40,9 +40,36 @@ def add():
     else:
         return common_render('add.jinja', form=form)
 
+class UnauthorizedException(Exception): pass
 
-@mod.route("/<int:id>") 
+def get_person(person_id):
+    p = Person.query.filter(Person.id == person_id).one()
+
+    if p.managed_by_id != current_user.person.id:
+        raise UnauthorizedException
+
+    return p
+
+@mod.route("/<int:person_id>") 
 @login_required
-def view(id):
-    p = Person.query.filter(Person.id == id).one()
+def view(person_id):
+    try:
+        p = get_person(person_id)
+    except NoResultFound:
+        return common_render("404.jinja"), 404
+    except UnauthorizedException:
+        return common_render("error.jinja"), 403
+
     return common_render("view.jinja", person=p)
+
+@mod.route("/<int:person_id>/entry/add") 
+@login_required
+def add_entry(person_id):
+    try:
+        p = get_person(person_id)
+    except NoResultFound:
+        return common_render("404.jinja"), 404
+    except UnauthorizedException:
+        return common_render("error.jinja"), 403
+
+    return common_render("add_entry.jinja", person=p)

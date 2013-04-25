@@ -1,6 +1,5 @@
 from flask.ext.sqlalchemy import SQLAlchemy
 from app import db, app
-import bcrypt
 
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -17,3 +16,33 @@ class Person(db.Model):
 
     def __repr__(self):
         return '<Person %r>' % self.first_name
+
+class Entry(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    author_id = db.Column(db.Integer, db.ForeignKey('person.id'))
+    subject_id = db.Column(db.Integer, db.ForeignKey('person.id'))
+    date = db.Column(db.Date)
+
+class Note(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    entry_id = db.Column(db.Integer, db.ForeignKey('entry.id'))
+    note_type = db.Column(db.String(16))
+    body = db.Column(db.Text)
+    linked_feedback = db.Column(db.Integer, db.ForeignKey('feedback.id'))
+    linked_checkin = db.Column(db.Integer, db.ForeignKey('checkin.id'))
+
+class Feedback(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    from_id = db.Column(db.Integer, db.ForeignKey('person.id'))
+    to_id = db.Column(db.Integer, db.ForeignKey('person.id'))
+    has_communicated = db.Column(db.Date)
+    date_communicated = db.Column(db.Date)
+    body = db.Column(db.Text)
+
+class Checkin(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    for_id = db.Column(db.Integer, db.ForeignKey('person.id'))
+    date_to_check_in = db.Column(db.Date)
+    has_checked_in = db.Column(db.Date)
+    date_checked_in = db.Column(db.Date)
+    body = db.Column(db.Text)

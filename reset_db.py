@@ -6,6 +6,10 @@ from app.people.models import Person
 db.drop_all()
 db.create_all()
 
+u = User("a@c.com", "tytych")
+db.session.add(u)
+db.session.commit()
+
 u = User("a@b.com", "tytych")
 db.session.add(u)
 db.session.commit()
@@ -15,5 +19,9 @@ db.session.add(p)
 db.session.commit()
 
 p = Person(None, "Sally", "Foobar", p.id)
+db.session.add(p)
+db.session.commit()
+
+p = Person(None, "Billy", "Foobar", p.id)
 db.session.add(p)
 db.session.commit()

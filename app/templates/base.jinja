@@ -8,8 +8,10 @@
     <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
     <link href="/static/css/tm.css" rel="stylesheet" type="text/css" media="all">
     <link rel="stylesheet" href="/static/css/index.css" />
+
     <title>Personnel</title>
     {% endblock %}
+    {% block css %}{% endblock %}
 </head>
 <body>
     <div class="container">
@@ -47,3 +49,8 @@
         </div>
     </div>
 </body>
+
+<script src="/static/js/jquery.js" type="text/javascript"></script>
+<script src="/static/js/underscore.js" type="text/javascript"></script>
+<script src="/static/js/backbone.js" type="text/javascript"></script>
+{% block js %}{% endblock %}
