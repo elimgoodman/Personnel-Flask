@@ -1,6 +1,9 @@
 {% extends "base.jinja" %}
 {% block content %}
     <h1>{{person.first_name}}</h1>
+    {% for entry in entries %}
+        E
+    {% endfor %}
     <a href="{{ url_for("people.add_entry", person_id=person.id) }}">Add Entry</a>
 {% endblock %}
 

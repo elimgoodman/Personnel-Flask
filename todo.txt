@@ -8,3 +8,4 @@
 - make the "no people" experience nicer
 - set environment variable on prod
 - sql indices
+- CSRF

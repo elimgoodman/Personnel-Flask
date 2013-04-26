@@ -10,11 +10,14 @@
 
 {% block content %}
     <h1>Add Entry for {{person.first_name}}</h1>
+    
+    <form id="entry-form" method="post">
+        <div id="notes">
+        </div>
+        <input type="submit" value="Save" />
+        <input type="hidden" name="notes" id="notes-field">
+    </form>
 
-    <div id="notes">
-    </div>
-
-    <textarea id="foo"></textarea>
     <script type="text/html" id="note-tmpl">
         <input class="body" value="<%= body %>" />
     </script>

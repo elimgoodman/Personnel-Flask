@@ -23,6 +23,11 @@ class Entry(db.Model):
     subject_id = db.Column(db.Integer, db.ForeignKey('person.id'))
     date = db.Column(db.Date)
 
+    def __init__(self, author_id, subject_id, date):
+        self.author_id = author_id
+        self.subject_id = subject_id
+        self.date = date
+
 class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     entry_id = db.Column(db.Integer, db.ForeignKey('entry.id'))
@@ -30,6 +35,11 @@ class Note(db.Model):
     body = db.Column(db.Text)
     linked_feedback = db.Column(db.Integer, db.ForeignKey('feedback.id'))
     linked_checkin = db.Column(db.Integer, db.ForeignKey('checkin.id'))
+    
+    def __init__(self, entry_id, note_type, body):
+        self.entry_id = entry_id
+        self.note_type = note_type
+        self.body = body
 
 class Feedback(db.Model):
     id = db.Column(db.Integer, primary_key=True)

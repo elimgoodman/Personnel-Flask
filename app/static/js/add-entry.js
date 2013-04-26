@@ -2,7 +2,8 @@
 
     var Note = Backbone.Model.extend({
         defaults: {
-            body: ""
+            body: "",
+            focussed: false
         }
     });
 
@@ -11,26 +12,54 @@
     });
 
     var Notes = new NoteCollection();
+    
+    var FocussedNoteController = Backbone.Marionette.Controller.extend({
+        initialize: function() {
+            this.focussed = null;
+        },
+        focusOn: function(note) {
+            if(this.focussed) {
+                this.focussed.set({focussed: false});
+            }
+            this.focussed = note;
+            this.focussed.set({focussed: true});
+            this.trigger("note:focussed");
+        }
+    });
+
+    var Focussed = new FocussedNoteController();
 
     var NoteView = Backbone.Marionette.ItemView.extend({
         template: "#note-tmpl",
         tagName: "li",
         className: "note",
         events: {
-            'keydown .body': 'handleKeydown'
+            'keydown .body': 'handleKeydown',
+            'keyup .body': 'handleKeyup'
         },
         handleKeydown: function(e){
             if(e.which == 13) {
-                Notes.push(new Note());
+                var n = new Note();
+                Focussed.focusOn(n);
+                Notes.push(n);
                 e.preventDefault();
-            }
+            } 
+        },
+        handleKeyup: function(e) {
+            var val = this.$('.body').val();
+            this.model.set({body: val});
         },
         onRender: function() {
-            //whatever
-            var self = this;
-            setTimeout(function(){
-                self.$el.find(".body").focus();
-            }, 10);
+            if(this.model.get('focussed')) {
+                this.$el.addClass("focussed");
+
+                var self = this;
+                setTimeout(function(){
+                    self.$(".body").focus();
+                }, 10);
+            } else {
+                this.$el.removeClass("focussed");
+            }
         }
     });
 
@@ -46,8 +75,22 @@
     });
     
     App.addInitializer(function(){
-        Notes.push(new Note());
+        var notes_field = $("#notes-field");
+        $("#entry-form").submit(function(){
+            notes_field.val(JSON.stringify(Notes.toJSON()));
+            return true;
+        });
+
         var notes_view = new NotesView({collection: Notes});
+
+        notes_view.listenTo(Focussed, "note:focussed", function(stuff){
+            this.render();
+        });
+
+        var n = new Note();
+        Focussed.focusOn(n);
+        Notes.push(n);
+
         App.notes.show(notes_view);
     });
 

@@ -1,7 +1,8 @@
+import json, datetime
 from app.util import common_render
 from sqlalchemy.orm.exc import NoResultFound
 from app.users.models import User
-from app.people.models import Person
+from app.people.models import Person, Entry, Note
 from app import app, login_manager, db
 from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for
 from flask_login import login_user, login_required, current_user, logout_user
@@ -60,9 +61,10 @@ def view(person_id):
     except UnauthorizedException:
         return common_render("error.jinja"), 403
 
-    return common_render("view.jinja", person=p)
+    entries = Entry.query.filter(Entry.subject_id == p.id).all()
+    return common_render("view.jinja", person=p, entries=entries)
 
-@mod.route("/<int:person_id>/entries/add") 
+@mod.route("/<int:person_id>/entries/add", methods=["GET", "POST"]) 
 @login_required
 def add_entry(person_id):
     try:
@@ -71,5 +73,20 @@ def add_entry(person_id):
         return common_render("404.jinja"), 404
     except UnauthorizedException:
         return common_render("error.jinja"), 403
+
+    if request.method == 'POST':
+
+        e = Entry(current_user.person.id, p.id, datetime.date.today())
+        db.session.add(e)
+        db.session.commit()
+
+        notes = json.loads(request.form['notes'])
+
+        for note in notes:
+            n = Note(e.id, "NOTE", note['body'])
+            db.session.add(n)
+
+        db.session.commit()
+        return redirect(url_for("people.view", person_id=p.id))
 
     return common_render("add_entry.jinja", person=p)
