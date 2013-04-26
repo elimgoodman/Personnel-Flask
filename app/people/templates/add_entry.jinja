@@ -13,9 +13,10 @@
 
     <div id="notes">
     </div>
-    
+
+    <textarea id="foo"></textarea>
     <script type="text/html" id="note-tmpl">
-        <textarea class="body"><%= body %></textarea>
+        <input class="body" value="<%= body %>" />
     </script>
 {% endblock %}
 

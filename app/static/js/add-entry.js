@@ -17,7 +17,7 @@
         tagName: "li",
         className: "note",
         events: {
-            'keydown textarea.body': 'handleKeydown'
+            'keydown .body': 'handleKeydown'
         },
         handleKeydown: function(e){
             if(e.which == 13) {
@@ -26,8 +26,11 @@
             }
         },
         onRender: function() {
-            console.log(this.$el.find("textarea.body"));
-            this.$el.find("textarea.body").focus();
+            //whatever
+            var self = this;
+            setTimeout(function(){
+                self.$el.find(".body").focus();
+            }, 10);
         }
     });
 
@@ -49,4 +52,5 @@
     });
 
     App.start();
+
 })();
