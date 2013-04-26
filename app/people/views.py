@@ -62,7 +62,7 @@ def view(person_id):
 
     return common_render("view.jinja", person=p)
 
-@mod.route("/<int:person_id>/entry/add") 
+@mod.route("/<int:person_id>/entries/add") 
 @login_required
 def add_entry(person_id):
     try:

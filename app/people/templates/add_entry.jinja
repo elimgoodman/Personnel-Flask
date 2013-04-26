@@ -10,7 +10,13 @@
 
 {% block content %}
     <h1>Add Entry for {{person.first_name}}</h1>
+
+    <div id="notes">
+    </div>
     
+    <script type="text/html" id="note-tmpl">
+        <textarea class="body"><%= body %></textarea>
+    </script>
 {% endblock %}
 
 
