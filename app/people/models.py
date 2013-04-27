@@ -1,4 +1,5 @@
 from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship, backref
 from app import db, app
 
 class Person(db.Model):
@@ -35,6 +36,7 @@ class Note(db.Model):
     body = db.Column(db.Text)
     linked_feedback = db.Column(db.Integer, db.ForeignKey('feedback.id'))
     linked_checkin = db.Column(db.Integer, db.ForeignKey('checkin.id'))
+    person = relationship("Entry", backref="notes")
     
     def __init__(self, entry_id, note_type, body):
         self.entry_id = entry_id

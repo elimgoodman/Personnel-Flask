@@ -83,8 +83,9 @@ def add_entry(person_id):
         notes = json.loads(request.form['notes'])
 
         for note in notes:
-            n = Note(e.id, "NOTE", note['body'])
-            db.session.add(n)
+            if note['body']:
+                n = Note(e.id, "NOTE", note['body'])
+                db.session.add(n)
 
         db.session.commit()
         return redirect(url_for("people.view", person_id=p.id))

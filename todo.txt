@@ -9,3 +9,6 @@
 - set environment variable on prod
 - sql indices
 - CSRF
+- findMany on all entries page
+- pagination on all entries page
+- clean up events/rendering in entry builder

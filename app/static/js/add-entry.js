@@ -3,7 +3,9 @@
     var Note = Backbone.Model.extend({
         defaults: {
             body: "",
-            focussed: false
+            focussed: false,
+            is_feedback: false,
+            is_checkin: false
         }
     });
 
@@ -33,9 +35,14 @@
         template: "#note-tmpl",
         tagName: "li",
         className: "note",
+        initialize: function() {
+            this.model.bind('change', this.render, this);
+        },
         events: {
             'keydown .body': 'handleKeydown',
-            'keyup .body': 'handleKeyup'
+            'keyup .body': 'handleKeyup',
+            'click .is-feedback': 'toggleIsFeedback',
+            'click .is-checkin': 'toggleIsCheckin'
         },
         handleKeydown: function(e){
             if(e.which == 13) {
@@ -49,7 +56,16 @@
             var val = this.$('.body').val();
             this.model.set({body: val});
         },
+        toggleIsFeedback: function(e){
+            var checked = $(e.target).is(":checked");
+            this.model.set({is_feedback: checked});
+        },
+        toggleIsCheckin: function(e){
+            var checked = $(e.target).is(":checked");
+            this.model.set({is_checkin: checked});
+        },
         onRender: function() {
+            console.log("here");
             if(this.model.get('focussed')) {
                 this.$el.addClass("focussed");
 

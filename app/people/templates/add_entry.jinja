@@ -19,7 +19,18 @@
     </form>
 
     <script type="text/html" id="note-tmpl">
+        {% raw %}
         <input class="body" value="<%= body %>" />
+        This is feedback <input type="checkbox" class="is-feedback" <% if(is_feedback){%>checked<%}%> />
+        <% if (is_feedback) {%> 
+            Feedback for: <input class="feedback-for" />
+        <%}%>
+        Check in on this <input type="checkbox" class="is-checkin" <% if(is_checkin){%>checked<%}%> />
+
+        <% if (is_checkin) {%> 
+            Check in on: <input class="check-in-on" />
+        <%}%>
+        {% endraw %}
     </script>
 {% endblock %}
 
