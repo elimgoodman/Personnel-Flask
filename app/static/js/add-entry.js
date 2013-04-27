@@ -65,7 +65,6 @@
             this.model.set({is_checkin: checked});
         },
         onRender: function() {
-            console.log("here");
             if(this.model.get('focussed')) {
                 this.$el.addClass("focussed");
 
