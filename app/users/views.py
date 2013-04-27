@@ -3,6 +3,7 @@ import bcrypt
 from sqlalchemy import and_
 from sqlalchemy.orm.exc import NoResultFound
 from app.users.models import User
+from app.people.models import Person
 from app import app, login_manager, db
 from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for
 from flask_login import login_user, login_required, current_user, logout_user
