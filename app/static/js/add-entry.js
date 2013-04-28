@@ -54,7 +54,7 @@
         },
         handleKeyup: function(e) {
             var val = this.$('.body').val();
-            this.model.set({body: val});
+            this.model.set({body: val}, {silent:true});
         },
         toggleIsFeedback: function(e){
             var checked = $(e.target).is(":checked");
@@ -97,10 +97,6 @@
         });
 
         var notes_view = new NotesView({collection: Notes});
-
-        notes_view.listenTo(Focussed, "note:focussed", function(stuff){
-            this.render();
-        });
 
         var n = new Note();
         Focussed.focusOn(n);
