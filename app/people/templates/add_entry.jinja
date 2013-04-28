@@ -21,16 +21,34 @@
     <script type="text/html" id="note-tmpl">
         {% raw %}
         <input class="body" value="<%= body %>" />
-        This is feedback <input type="checkbox" class="is-feedback" <% if(is_feedback){%>checked<%}%> />
-        <% if (is_feedback) {%> 
-            Feedback for: <input class="feedback-for" />
-        <%}%>
-        Check in on this <input type="checkbox" class="is-checkin" <% if(is_checkin){%>checked<%}%> />
+        None <input type="radio" name="note-type" value="NOTE" class="note-type" <% if(isNote()){%>checked<%}%> />
+        This is feedback <input type="radio" name="note-type" value="FEEDBACK" class="note-type" <% if(isFeedback()){%>checked<%}%> />
+        <% if (isFeedback()) {%> 
+            Feedback for: 
+            <select class="feedback-for meta" data-meta="feedback-for">
+                <% allPeople().each(function(p){%>
+                    <option value="<%= p.get('id') %>" 
+                        <% if(getMeta('feedback-for') == p.get('id')){ %>
+                            selected
+                        <%}%>
+                    >
 
-        <% if (is_checkin) {%> 
+                        <%= p.get('first_name') %>
+                        <%= p.get('last_name') %>
+                    </option>
+                <%});%>
+            </select>
+        <%}%>
+        Check in on this <input type="radio" name="note-type" value="CHECKIN" class="note-type" <% if(isCheckin()){%>checked<%}%> />
+
+        <% if (isCheckin()) {%> 
             Check in on: <input class="check-in-on" />
         <%}%>
         {% endraw %}
+    </script>
+
+    <script type="text/javascript">
+        var managed_by_str = '{{managed_by_str}}';
     </script>
 {% endblock %}
 

@@ -12,3 +12,5 @@
 - findMany on all entries page
 - pagination on all entries page
 - clean up events/rendering in entry builder
+- add admin view
+- deal with "destination" after login

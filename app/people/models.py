@@ -38,16 +38,18 @@ class Note(db.Model):
     linked_checkin = db.Column(db.Integer, db.ForeignKey('checkin.id'))
     person = relationship("Entry", backref="notes")
     
-    def __init__(self, entry_id, note_type, body):
+    def __init__(self, entry_id, note_type, body, linked_feedback=None, linked_checkin=None):
         self.entry_id = entry_id
         self.note_type = note_type
         self.body = body
+        self.linked_feedback = linked_feedback
+        self.linked_checkin = linked_checkin
 
 class Feedback(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     from_id = db.Column(db.Integer, db.ForeignKey('person.id'))
     to_id = db.Column(db.Integer, db.ForeignKey('person.id'))
-    has_communicated = db.Column(db.Date)
+    has_communicated = db.Column(db.Boolean)
     date_communicated = db.Column(db.Date)
     body = db.Column(db.Text)
 

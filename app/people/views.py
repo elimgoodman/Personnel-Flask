@@ -1,8 +1,8 @@
 import json, datetime
-from app.util import common_render
+from app.util import common_render, to_json
 from sqlalchemy.orm.exc import NoResultFound
 from app.users.models import User
-from app.people.models import Person, Entry, Note
+from app.people.models import Person, Entry, Note, Feedback
 from app import app, login_manager, db
 from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for
 from flask_login import login_user, login_required, current_user, logout_user
@@ -68,15 +68,26 @@ def view(person_id):
 @login_required
 def add_entry(person_id):
     try:
-        p = get_person(person_id)
+        subject = get_person(person_id)
     except NoResultFound:
         return common_render("404.jinja"), 404
     except UnauthorizedException:
         return common_render("error.jinja"), 403
 
+    #fetch and serlialize all people managed by the current user
+    current_person_id = current_user.person.id
+
+    #FIXME: if this doing two separate queries?
+    managed_by = Person.query\
+            .filter(Person.managed_by_id == current_person_id)\
+            .filter(Person.id != subject.id)\
+            .all()
+    managed_by = [to_json(p, Person) for p in managed_by]
+    managed_by_str = json.dumps(managed_by)
+
     if request.method == 'POST':
 
-        e = Entry(current_user.person.id, p.id, datetime.date.today())
+        e = Entry(current_user.person.id, subject.id, datetime.date.today())
         db.session.add(e)
         db.session.commit()
 
@@ -84,10 +95,25 @@ def add_entry(person_id):
 
         for note in notes:
             if note['body']:
-                n = Note(e.id, "NOTE", note['body'])
+                if note['type'] == "FEEDBACK":
+                    f = Feedback()
+                    f.from_id = subject.id
+                    f.to_id = int(note['meta']['feedback-for'])
+                    f.has_communicated = False
+                    f.body = note['body']
+
+                    #FIXME: this could lead to numerous commits
+                    db.session.add(f)
+                    db.session.commit()
+
+                n = Note(e.id, note["type"], note['body'])
+
+                if f:
+                    n.linked_feedback = f.id
+
                 db.session.add(n)
 
         db.session.commit()
-        return redirect(url_for("people.view", person_id=p.id))
+        return redirect(url_for("people.view", person_id=subject.id))
 
-    return common_render("add_entry.jinja", person=p)
+    return common_render("add_entry.jinja", person=subject, managed_by_str=managed_by_str)

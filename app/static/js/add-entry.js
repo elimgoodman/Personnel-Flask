@@ -1,14 +1,37 @@
 (function(){
 
+    var People;
     var Note = Backbone.Model.extend({
         defaults: {
             body: "",
             focussed: false,
-            is_feedback: false,
-            is_checkin: false
+            type: "NOTE",
+            meta: {}
+        },
+        initialize: function() {
+            //meta defaults
+            this.updateMeta('feedback-for', People.at(0).get('id'));
+        },
+        updateMeta: function(key, val) {
+            var meta = this.get('meta');
+            meta[key] = val;
+            this.set({meta: meta});
         }
     });
 
+    var Person = Backbone.Model.extend({
+    });
+
+    var PersonCollection = Backbone.Collection.extend({
+        model: Person,
+        url: "/api/people/managed_by_current_user",
+        parse: function(data) {
+            return data.results;
+        }
+    });
+    
+    var People = new PersonCollection();
+    
     var NoteCollection = Backbone.Collection.extend({
         model: Note
     });
@@ -41,8 +64,14 @@
         events: {
             'keydown .body': 'handleKeydown',
             'keyup .body': 'handleKeyup',
-            'click .is-feedback': 'toggleIsFeedback',
-            'click .is-checkin': 'toggleIsCheckin'
+            'click .note-type': 'changeType',
+            'change .meta': 'changeMeta'
+        },
+        changeMeta: function(e) {
+            var target = $(e.target);
+            var key = target.data('meta');
+            this.model.updateMeta(key, target.val());
+            console.log(this.model.toJSON());
         },
         handleKeydown: function(e){
             if(e.which == 13) {
@@ -75,6 +104,27 @@
             } else {
                 this.$el.removeClass("focussed");
             }
+        },
+        templateHelpers: {
+            isCheckin: function() {
+                return this.type == "CHECKIN";
+            },
+            isFeedback: function() {
+                return this.type == "FEEDBACK";
+            },
+            isNote: function() {
+                return this.type == "NOTE";
+            },
+            allPeople: function() {
+                return People;
+            },
+            getMeta: function(key) {
+                return this.meta[key];
+            }
+        },
+        changeType: function(e) {
+            var type = $(e.target);
+            this.model.set({type: type.val()});
         }
     });
 
@@ -90,6 +140,8 @@
     });
     
     App.addInitializer(function(){
+        People.reset(JSON.parse(managed_by_str));
+
         var notes_field = $("#notes-field");
         $("#entry-form").submit(function(){
             notes_field.val(JSON.stringify(Notes.toJSON()));

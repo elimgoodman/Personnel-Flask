@@ -18,7 +18,17 @@ p = Person(u.id, "Eli", "Goodman")
 db.session.add(p)
 db.session.commit()
 
-p = Person(None, "Sally", "Foobar", p.id)
+pid = p.id
+
+p = Person(None, "Sally", "Foobar", pid)
+db.session.add(p)
+db.session.commit()
+
+p = Person(None, "Nina", "Ogobo", pid)
+db.session.add(p)
+db.session.commit()
+
+p = Person(None, "Phil", "Dish", pid)
 db.session.add(p)
 db.session.commit()
 
