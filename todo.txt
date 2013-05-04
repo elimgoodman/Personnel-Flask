@@ -14,3 +14,4 @@
 - clean up events/rendering in entry builder
 - add admin view
 - deal with "destination" after login
+- denormalize all the feedback stuff onto note

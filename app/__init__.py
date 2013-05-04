@@ -30,10 +30,10 @@ app.register_blueprint(apiModule)
 
 ###ADMIN###
 
-admin_app = Admin(app, name="Personnel")
-from app.admin.views import IndexView
-from app.people.models import Person, Feedback, Note, Entry
-admin_app.add_view(ModelView(Person, db.session))
-admin_app.add_view(ModelView(Note, db.session))
-admin_app.add_view(ModelView(Entry, db.session))
-admin_app.add_view(ModelView(Feedback, db.session))
+#admin_app = Admin(app, name="Personnel")
+#from app.admin.views import IndexView
+#from app.people.models import Person, Feedback, Note, Entry
+#admin_app.add_view(ModelView(Person, db.session))
+#admin_app.add_view(ModelView(Note, db.session))
+#admin_app.add_view(ModelView(Entry, db.session))
+#admin_app.add_view(ModelView(Feedback, db.session))

@@ -105,8 +105,11 @@ def add_entry(person_id):
                     #FIXME: this could lead to numerous commits
                     db.session.add(f)
                     db.session.commit()
+                else:
+                    f = None
 
-                n = Note(e.id, note["type"], note['body'])
+                pinned = note['type'] == 'CHECKIN'
+                n = Note(e.id, note["type"], note['body'], is_pinned=pinned)
 
                 if f:
                     n.linked_feedback = f.id

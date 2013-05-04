@@ -34,16 +34,16 @@ class Note(db.Model):
     entry_id = db.Column(db.Integer, db.ForeignKey('entry.id'))
     note_type = db.Column(db.String(16))
     body = db.Column(db.Text)
+    is_pinned = db.Column(db.Boolean)
     linked_feedback = db.Column(db.Integer, db.ForeignKey('feedback.id'))
-    linked_checkin = db.Column(db.Integer, db.ForeignKey('checkin.id'))
     person = relationship("Entry", backref="notes")
-    
-    def __init__(self, entry_id, note_type, body, linked_feedback=None, linked_checkin=None):
+
+    def __init__(self, entry_id, note_type, body, is_pinned=False, linked_feedback=None):
         self.entry_id = entry_id
         self.note_type = note_type
         self.body = body
         self.linked_feedback = linked_feedback
-        self.linked_checkin = linked_checkin
+        self.is_pinned = is_pinned
 
 class Feedback(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -52,11 +52,6 @@ class Feedback(db.Model):
     has_communicated = db.Column(db.Boolean)
     date_communicated = db.Column(db.Date)
     body = db.Column(db.Text)
-
-class Checkin(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    for_id = db.Column(db.Integer, db.ForeignKey('person.id'))
-    date_to_check_in = db.Column(db.Date)
-    has_checked_in = db.Column(db.Date)
-    date_checked_in = db.Column(db.Date)
-    body = db.Column(db.Text)
+    note = relationship("Note", backref="feedback", uselist=False)
+    from_person = relationship("Person", backref="feedback_given", foreign_keys=[from_id])
+    to_person = relationship("Person", backref="feedback_taken", foreign_keys=[to_id])

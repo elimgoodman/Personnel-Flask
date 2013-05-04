@@ -8,6 +8,12 @@
                     {% for note in entry.notes %}
                         <li class="note">
                             {{note.body}}
+                            {% if note.is_pinned %}
+                                pinned
+                            {% endif %}
+                            {% if note.note_type == "FEEDBACK" %}
+                                for {{note.feedback.to_person.first_name}}
+                            {% endif %}
                         </li>
                     {% endfor %}
                 </ul>
