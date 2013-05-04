@@ -15,3 +15,5 @@
 - add admin view
 - deal with "destination" after login
 - denormalize all the feedback stuff onto note
+- escaping of note body/person name
+- check ownership for note and feedback api methods

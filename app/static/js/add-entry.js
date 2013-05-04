@@ -16,20 +16,25 @@
             var meta = this.get('meta');
             meta[key] = val;
             this.set({meta: meta});
-        }
+        },
+        url: "/api/notes"
     });
 
     var Person = Backbone.Model.extend({
     });
 
-    var PersonCollection = Backbone.Collection.extend({
-        model: Person,
-        url: "/api/people/managed_by_current_user",
-        parse: function(data) {
-            return data.results;
-        }
+    var Feedback = Backbone.Model.extend({
+        url: "/api/feedback"
     });
-    
+
+    var PersonCollection = Backbone.Collection.extend({
+        model: Person
+    });
+
+    var FeedbackCollection = Backbone.Collection.extend({
+        model: Feedback
+    });
+
     var People = new PersonCollection();
     
     var NoteCollection = Backbone.Collection.extend({
@@ -37,7 +42,9 @@
     });
 
     var Notes = new NoteCollection();
-    
+    var PinnedNotes = new NoteCollection();
+    var FeedbackToGive = new FeedbackCollection();
+
     var FocussedNoteController = Backbone.Marionette.Controller.extend({
         initialize: function() {
             this.focussed = null;
@@ -53,6 +60,48 @@
     });
 
     var Focussed = new FocussedNoteController();
+    
+    var PinnedNoteView = Backbone.Marionette.ItemView.extend({
+        template: "#pinned-note-tmpl",
+        tagName: "li",
+        className: "pinned-note",
+        events: {
+            "click .unpin-link": 'unpinNote'
+        },
+        unpinNote: function(e) {
+            this.model.set({is_pinned: false});
+            this.model.save();
+            
+            this.$el.hide();
+
+            e.preventDefault();
+        }
+    });
+
+    var FeedbackView = Backbone.Marionette.ItemView.extend({
+        template: "#feedback-tmpl",
+        tagName: "li",
+        className: "feedback",
+        events: {
+            "click .communicated-link": 'communicatedFeedback'
+        },
+        communicatedFeedback: function(e) {
+            this.model.set({has_communicated: true});
+            this.model.save();
+            
+            this.$el.hide();
+
+            e.preventDefault();
+        }
+    });
+
+    var PinnedNotesView = Backbone.Marionette.CollectionView.extend({
+        itemView: PinnedNoteView
+    });
+
+    var FeedbackCollectionView = Backbone.Marionette.CollectionView.extend({
+        itemView: FeedbackView
+    });
 
     var NoteView = Backbone.Marionette.ItemView.extend({
         template: "#note-tmpl",
@@ -136,11 +185,15 @@
     var App = new Backbone.Marionette.Application();    
     
     App.addRegions({
-        notes: "#notes"
+        notes: "#notes",
+        pinned_notes: "#pinned-notes",
+        feedback: "#feedback"
     });
     
     App.addInitializer(function(){
         People.reset(JSON.parse(managed_by_str));
+        PinnedNotes.reset(JSON.parse(pinned_str));
+        FeedbackToGive.reset(JSON.parse(feedback_str));
 
         var notes_field = $("#notes-field");
         $("#entry-form").submit(function(){
@@ -154,7 +207,17 @@
         Focussed.focusOn(n);
         Notes.push(n);
 
+        var pinned_notes_view = new PinnedNotesView({
+            collection: PinnedNotes
+        });
+
+        var feedback_view = new FeedbackCollectionView({
+            collection: FeedbackToGive
+        });
+
         App.notes.show(notes_view);
+        App.pinned_notes.show(pinned_notes_view);
+        App.feedback.show(feedback_view);
     });
 
     App.start();

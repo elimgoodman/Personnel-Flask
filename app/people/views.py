@@ -1,5 +1,6 @@
 import json, datetime
 from app.util import common_render, to_json
+from sqlalchemy import and_
 from sqlalchemy.orm.exc import NoResultFound
 from app.users.models import User
 from app.people.models import Person, Entry, Note, Feedback
@@ -77,13 +78,30 @@ def add_entry(person_id):
     #fetch and serlialize all people managed by the current user
     current_person_id = current_user.person.id
 
-    #FIXME: if this doing two separate queries?
-    managed_by = Person.query\
-            .filter(Person.managed_by_id == current_person_id)\
-            .filter(Person.id != subject.id)\
+    managed_by = Person.query.filter(and_(\
+            Person.managed_by_id == current_person_id,\
+            Person.id != subject.id))\
             .all()
+
     managed_by = [to_json(p, Person) for p in managed_by]
     managed_by_str = json.dumps(managed_by)
+
+    # get all pinned notes
+    pinned = Note.query.filter(and_(\
+            Note.is_pinned == True, \
+            Note.author_id == current_person_id, \
+            Note.subject_id == subject.id)).all()
+
+    pinned = [to_json(p, Note) for p in pinned]
+    pinned_str = json.dumps(pinned)
+
+    # get all feedback
+    feedback = Feedback.query.filter(and_(\
+            Feedback.to_id == subject.id,
+            Feedback.has_communicated == False)).all()
+
+    feedback = [to_json(p, Feedback) for p in feedback]
+    feedback_str = json.dumps(feedback)
 
     if request.method == 'POST':
 
@@ -108,9 +126,9 @@ def add_entry(person_id):
                 else:
                     f = None
 
-                pinned = note['type'] == 'CHECKIN'
-                n = Note(e.id, note["type"], note['body'], is_pinned=pinned)
-
+                is_pinned = note['type'] == 'CHECKIN'
+                n = Note(e, note["type"], note['body'], is_pinned=is_pinned)
+            
                 if f:
                     n.linked_feedback = f.id
 
@@ -119,4 +137,8 @@ def add_entry(person_id):
         db.session.commit()
         return redirect(url_for("people.view", person_id=subject.id))
 
-    return common_render("add_entry.jinja", person=subject, managed_by_str=managed_by_str)
+    return common_render("add_entry.jinja", \
+            person=subject,\
+            managed_by_str=managed_by_str,\
+            feedback_str=feedback_str,\
+            pinned_str=pinned_str)

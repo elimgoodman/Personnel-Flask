@@ -32,14 +32,18 @@ class Entry(db.Model):
 class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     entry_id = db.Column(db.Integer, db.ForeignKey('entry.id'))
+    author_id = db.Column(db.Integer, db.ForeignKey('person.id'))
+    subject_id = db.Column(db.Integer, db.ForeignKey('person.id'))
     note_type = db.Column(db.String(16))
     body = db.Column(db.Text)
     is_pinned = db.Column(db.Boolean)
     linked_feedback = db.Column(db.Integer, db.ForeignKey('feedback.id'))
     person = relationship("Entry", backref="notes")
 
-    def __init__(self, entry_id, note_type, body, is_pinned=False, linked_feedback=None):
-        self.entry_id = entry_id
+    def __init__(self, entry, note_type, body, is_pinned=False, linked_feedback=None):
+        self.entry_id = entry.id
+        self.subject_id = entry.subject_id
+        self.author_id = entry.author_id
         self.note_type = note_type
         self.body = body
         self.linked_feedback = linked_feedback
@@ -50,7 +54,6 @@ class Feedback(db.Model):
     from_id = db.Column(db.Integer, db.ForeignKey('person.id'))
     to_id = db.Column(db.Integer, db.ForeignKey('person.id'))
     has_communicated = db.Column(db.Boolean)
-    date_communicated = db.Column(db.Date)
     body = db.Column(db.Text)
     note = relationship("Note", backref="feedback", uselist=False)
     from_person = relationship("Person", backref="feedback_given", foreign_keys=[from_id])

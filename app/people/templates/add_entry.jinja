@@ -12,11 +12,22 @@
     <h1>Add Entry for {{person.first_name}}</h1>
     
     <form id="entry-form" method="post">
-        <div id="notes">
-        </div>
+        <div id="feedback"></div>
+        <div id="pinned-notes"></div>
+        <div id="notes"></div>
         <input type="submit" value="Save" />
         <input type="hidden" name="notes" id="notes-field">
     </form>
+
+    <script type="text/html" id="pinned-note-tmpl">
+        <%= body %>
+        <a class="unpin-link" href='#'>Done</a>
+    </script>
+
+    <script type="text/html" id="feedback-tmpl">
+        <%= body %>
+        <a class="communicated-link" href='#'>Communicated</a>
+    </script>
 
     <script type="text/html" id="note-tmpl">
         {% raw %}
@@ -45,6 +56,8 @@
 
     <script type="text/javascript">
         var managed_by_str = '{{managed_by_str}}';
+        var pinned_str = '{{pinned_str}}';
+        var feedback_str = '{{feedback_str}}';
     </script>
 {% endblock %}
 
